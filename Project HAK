@@ -1,0 +1,467 @@
+// Hello. Nice to meet you.
+// So I don't forget to put the project here.
+
+#include <Arduino.h>
+#include <stdio.h>
+#include <BleKeyboard.h>
+#include "Wire.h"
+#include "I2Cdev.h"
+#include "MPU6050.h"
+BleKeyboard bleKeyboard("Project HAK...");
+
+const int SENSOR1 = 27;
+const int SENSOR2 = 12;
+const int SENSOR3 = 13;
+const int SENSOR4 = 14;
+const int SENSOR5 = 32;
+const int LED_PIN = 5;
+const int FEEDBACK = 26;
+
+MPU6050 accelgyro;
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
+int i = 0;
+int n = 0;
+
+void setup() {
+  Wire.begin();
+  Serial.begin(115200);
+  Serial.println("Starting BLE work!");
+  bleKeyboard.begin();
+
+  // ６軸ジャイロセンサー初期化
+  accelgyro.initialize();
+  delay(10);
+
+  // ジャイロセンサーの計測範囲を2000 deg/secに設定、16.4 LSB/deg/s
+  accelgyro.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
+  delay(10);
+  
+  accelgyro.CalibrateGyro();
+  accelgyro.CalibrateAccel();
+  
+  pinMode(SENSOR1, INPUT);
+  pinMode(SENSOR2, INPUT);
+  pinMode(SENSOR3, INPUT);
+  pinMode(SENSOR4, INPUT);
+  pinMode(SENSOR5, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(FEEDBACK, OUTPUT);
+}
+
+void loop() {
+
+   if (digitalRead(SENSOR1)==HIGH) {
+
+      // 時間を計っとく
+     static float timer = 0;
+
+      // 各軸加速度と角速度を取得
+     accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+      //X、Y軸まわりの角度を計算
+     float degY = atan2(ax, az) * RAD_TO_DEG;
+     float degX = atan2(ay, az) * RAD_TO_DEG;
+    
+     digitalWrite(LED_PIN, HIGH);
+     for (n=0; n<125; n++) {
+         digitalWrite(FEEDBACK, HIGH);
+         delay(1);
+         digitalWrite(FEEDBACK, LOW);
+         delay(1);
+     }
+     
+     digitalWrite(LED_PIN, LOW);
+     i=0;
+
+     if (degY >= 180) {
+         i = + 20000
+     }
+   
+     if (digitalRead(SENSOR1)==HIGH) {
+         i = + 1;
+     } 
+  
+     if (digitalRead(SENSOR2)==HIGH) {
+         i = + 10;
+     }
+  
+     if (digitalRead(SENSOR3)==HIGH) {
+         i = + 100;
+     }
+
+     if (digitalRead(SENSOR4)==HIGH) {
+         i = + 1000;
+     }
+
+     if (digitalRead(SENSOR5)==HIGH) {
+         i = + 10000;
+     }
+      
+     switch (i) {
+    
+         case 0:
+         bleKeyboard.write(KEY_BACKSPACE);
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1:
+         bleKeyboard.print("a");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10:
+         bleKeyboard.print("b");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 11:
+         bleKeyboard.print("c");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 100:
+         bleKeyboard.print("d");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 101:
+         bleKeyboard.print("e");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 110:
+         bleKeyboard.print("f");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 111:
+         bleKeyboard.print("g");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1000:
+         bleKeyboard.print("h");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+    
+         case 1001:
+         bleKeyboard.print("i");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1010:
+         bleKeyboard.print("j");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1011:
+         bleKeyboard.print("k");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1100:
+         bleKeyboard.print("l");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1101:
+         bleKeyboard.print("m");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1110:
+         bleKeyboard.print("n");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 1111:
+         bleKeyboard.print("o");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10000:
+         bleKeyboard.print("p");
+         digitalWrite(LED_PIN, HIGH);  
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10001:
+         bleKeyboard.print("q");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10010:
+         bleKeyboard.print("r");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10011:
+         bleKeyboard.print("s");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10100:
+         bleKeyboard.print("t");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10101:
+         bleKeyboard.print("u");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10110:
+         bleKeyboard.print("v");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 10111:
+         bleKeyboard.print("w");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 11000:
+         bleKeyboard.print("x");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 11001:
+         bleKeyboard.print("y");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 11010:
+         bleKeyboard.print("z");
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 11011:
+         bleKeyboard.write(KEY_RETURN);
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         case 20000:
+         bleKeyboard.write(KEY_CAPS_LOCK);
+         digitalWrite(LED_PIN, HIGH);
+         for (n=0; n<250; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+
+         default:
+         bleKeyboard.print("error");
+         for (n=0; n<500; n++) {
+             digitalWrite(FEEDBACK, HIGH);
+             delay(1);
+             digitalWrite(FEEDBACK, LOW);
+             delay(1);
+           }
+         digitalWrite(LED_PIN, LOW);
+         break;
+        }
+    } else {
+         digitalWrite(LED_PIN, LOW);
+       }  
+}
