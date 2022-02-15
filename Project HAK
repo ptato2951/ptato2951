@@ -1,14 +1,12 @@
 // Hello. Nice to meet you.
 // So I don't forget to put the project here.
-// But this program is not work. Becouse it have 
-library error.
+// Modified version.
 
 #include <Arduino.h>
 #include <stdio.h>
 #include <BleKeyboard.h>
-#include "Wire.h"
-#include "I2Cdev.h"
-#include "MPU6050.h"
+#include <wire.h>
+
 BleKeyboard bleKeyboard("Project HAK...");
 
 const int SENSOR1 = 27;
@@ -19,10 +17,10 @@ const int SENSOR5 = 32;
 const int LED_PIN = 5;
 const int FEEDBACK = 26;
 
-MPU6050 accelgyro;
-
-int16_t ax, ay, az;
-int16_t gx, gy, gz;
+// MPU-6050のアドレス、レジスタ設定値
+#define MPU6050_WHO_AM_I     0x75  // Read Only
+#define MPU6050_PWR_MGMT_1   0x6B  // Read and Write
+#define MPU_ADDRESS  0x68
 
 int i = 0;
 int n = 0;
@@ -33,16 +31,17 @@ void setup() {
   Serial.println("Starting BLE work!");
   bleKeyboard.begin();
 
-  // ６軸ジャイロセンサー初期化
-  accelgyro.initialize();
-  delay(10);
+  // 初回の読み出し
+  Wire.beginTransmission(MPU_ADDRESS);
+  Wire.write(MPU6050_WHO_AM_I);  //MPU6050_PWR_MGMT_1
+  Wire.write(0x00);
+  Wire.endTransmission();
 
-  // ジャイロセンサーの計測範囲を2000 deg/secに設定、16.4 LSB/deg/s
-  accelgyro.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
-  delay(10);
-  
-  accelgyro.CalibrateGyro();
-  accelgyro.CalibrateAccel();
+  // 動作モードの読み出し
+  Wire.beginTransmission(MPU_ADDRESS);
+  Wire.write(MPU6050_PWR_MGMT_1);  //MPU6050_PWR_MGMT_1レジスタの設定
+  Wire.write(0x00);
+  Wire.endTransmission();
   
   pinMode(SENSOR1, INPUT);
   pinMode(SENSOR2, INPUT);
@@ -55,15 +54,21 @@ void setup() {
 
 void loop() {
 
+  Wire.beginTransmission(0x68);
+  Wire.write(0x3B);
+  Wire.endTransmission(false);
+  Wire.requestFrom(0x68, 14, true);
+  while (Wire.available() < 14);
+  int16_t ax, ay, az, gx, gy, gz;
+
    if (digitalRead(SENSOR1)==HIGH) {
 
-      // 時間を計っとく
-     static float timer = 0;
-
-      // 各軸加速度と角速度を取得
-     accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-
-      //X、Y軸まわりの角度を計算
+      //X,Y,Zの角速度を取得
+     ax = Wire.read() << 8 | Wire.read();
+     ay = Wire.read() << 8 | Wire.read();
+     az = Wire.read() << 8 | Wire.read();
+     
+      //X、Y軸の角度を計算
      float degY = atan2(ax, az) * RAD_TO_DEG;
      float degX = atan2(ay, az) * RAD_TO_DEG;
     
@@ -79,7 +84,7 @@ void loop() {
      i=0;
 
      if (degY >= 180) {
-         i = + 20000
+         i = + 20000;
      }
    
      if (digitalRead(SENSOR1)==HIGH) {
