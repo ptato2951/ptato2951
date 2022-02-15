@@ -1,5 +1,7 @@
 // Hello. Nice to meet you.
 // So I don't forget to put the project here.
+// But this program is not work. Becouse it have 
+library error.
 
 #include <Arduino.h>
 #include <stdio.h>
